@@ -1,0 +1,17 @@
+{
+    "name": "galim/itrvb",
+    "autoload": {
+        "psr-4": {
+            "Galim\\Itrvb\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Alenaglmv"
+
+        }
+    ],
+    "require": {
+        "fakerphp/faker": "^1.23"
+    }
+}
