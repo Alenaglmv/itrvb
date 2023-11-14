@@ -3,36 +3,36 @@
 namespace Galim\Itrvb\Blog;
 
 class Article {
-    public function __construct(public $id, private $authorId, private $title, private $text) {
+    public function __construct(private UUID $uuid, private UUID $authorUuid, private string $title, private string $texts) {
 
     }
 
     public function __toString()
     {
         return
-            "ID : " . $this->getId() . "<br>" .
-            "Автор ID : " . $this->getAuthorId() ."<br>".
+            "UUID : " . $this->getUuid() . "<br>" .
+            "UUID автора: " . $this->getAuthorUuid() ."<br>".
             "Заголовок : " . $this->getTitle() . "<br>" .
-            "Текст : " . $this->getText() . "<br>";
+            "Текст : " . $this->getTexts() . "<br>";
     }
 
-    public function getId()
+    public function getUuid(): UUID
     {
-        return $this->id;
+        return $this->uuid;
     }
 
-    public function getAuthorId()
+    public function getAuthorUuid(): UUID
     {
-        return $this->authorId;
+        return $this->authorUuid;
     }
 
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function getText()
+    public function getTexts(): string
     {
-        return $this->text;
+        return $this->texts;
     }
 }

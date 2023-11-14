@@ -3,21 +3,26 @@
 namespace Galim\Itrvb\Blog;
 
 class User {
-    public function __construct(public $id, private readonly Name $name) {
+    public function __construct(private UUID $uuid, private string $username, private Name $name) {
 
     }
 
     public function __toString() {
         return
-            "ID : " . $this->getId() . "<br>" .
+            "UUID : " . $this->getUuid() . "<br>" .
+            "Ник пользователя: " . $this->getUsername() .
             $this->getName() . "<br>";
     }
 
-    public function getId() {
-        return $this->id;
+    public function getUuid(): UUID {
+        return $this->uuid;
     }
 
-    public function getName() {
+    public function getUsername(): string {
+        return $this->username;
+    }
+
+    public function getName(): Name {
         return $this->name;
     }
 }
