@@ -42,8 +42,17 @@ class SqliteArticleRepository implements ArticleRepositoryInterface {
 
         return new Article(
             new UUID($result['uuid']),
-            $result['author_uuid'],
+            new UUID($result['author_uuid']),
             $result['title'],
             $result['texts']);
+    }
+
+    public function delete(UUID $uuid): void {
+        $statement = $this->connection->prepare(
+            'DELETE FROM article WHERE uuid = :uuid'
+        );
+        $statement->execute([
+            ':uuid' => (string)$uuid
+        ]);
     }
 }

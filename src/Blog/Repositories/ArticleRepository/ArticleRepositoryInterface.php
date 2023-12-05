@@ -8,4 +8,5 @@ use Galim\Itrvb\Blog\UUID;
 interface ArticleRepositoryInterface {
     public function save(Article $article): void;
     public function get(UUID $uuid): Article;
+    public function delete(UUID $uuid): void;
 }

@@ -30,10 +30,10 @@ class SqliteUserRepository implements UserRepositoryInterface {
             'SELECT * FROM users WHERE uuid = :uuid'
         );
         $statement->execute([
-            ':uuid' => (string)$uuid
+            ':uuid' => (string)$uuid,
         ]);
 
-        return $this->getUser($statement, $uuid);
+        return $this->getUser($statement, (string)$uuid);
     }
 
     public function getByUsername(string $username): User {
@@ -47,7 +47,7 @@ class SqliteUserRepository implements UserRepositoryInterface {
         return $this->getUser($statement, $username);
     }
 
-    private function getUser(PDOStatement $statement, string $payload): User {
+    private function getUser(PDOStatement $statement, string $payload) {
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
         if($result === false) {

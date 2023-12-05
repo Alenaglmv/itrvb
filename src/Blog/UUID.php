@@ -5,7 +5,7 @@ namespace Galim\Itrvb\Blog;
 use Galim\Itrvb\Blog\Exceptions\InvalidArgumentException;
 
 class UUID {
-    public function __construct(private string $uuid){
+    public function __construct(private readonly string $uuid){
         if (!uuid_is_valid($uuid)) {
             throw new InvalidArgumentException(
                 "Malformed UUID: $uuid"
