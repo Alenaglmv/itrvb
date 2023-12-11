@@ -4,6 +4,7 @@ use Galim\Itrvb\Blog\Exceptions\HttpException;
 use Galim\Itrvb\Blog\Http\Actions\Articles\CreateArticle;
 use Galim\Itrvb\Blog\Http\Actions\Articles\DeleteArticle;
 use Galim\Itrvb\Blog\Http\Actions\Comments\CreateComment;
+use Galim\Itrvb\Blog\Http\Actions\LikeArticle\CreateLikeArticle;
 use Galim\Itrvb\Blog\Http\Actions\Users\CreateUser;
 use Galim\Itrvb\Blog\Http\Actions\Users\FindByUsername;
 use Galim\Itrvb\Blog\Http\ErrorResponse;
@@ -12,13 +13,7 @@ use Galim\Itrvb\Blog\Repositories\ArticleRepository\SqliteArticleRepository;
 use Galim\Itrvb\Blog\Repositories\CommentRepository\SqliteCommentRepository;
 use Galim\Itrvb\Blog\Repositories\UserRepository\SqliteUserRepository;
 
-require_once __DIR__.'/vendor/autoload.php';
-
-$pdo = new PDO('sqlite:' . __DIR__ . '/blog.sqlite');
-
-$userRepository = new SqliteUserRepository($pdo);
-$articleRepository = new SqliteArticleRepository($pdo);
-$commentRepository = new SqliteCommentRepository($pdo);
+$container = require __DIR__ . '/bootstrap.php';
 
 $request = new Request($_GET, $_SERVER, file_get_contents('php://input'));
 
@@ -37,15 +32,16 @@ try {
 
 $routes = [
     'GET' => [
-        '/users/show' => new FindByUsername($userRepository),
+        '/users/show' => FindByUsername::class,
     ],
     'POST' => [
-        '/users/create' => new CreateUser($userRepository),
-        '/articles/create' => new CreateArticle($articleRepository, $userRepository),
-        '/articles/comments/create' => new CreateComment($commentRepository, $userRepository, $articleRepository),
+        '/users/create' => CreateUser::class,
+        '/articles/create' => CreateArticle::class,
+        '/articles/comments/create' => CreateComment::class,
+        '/articles/likes/create' => CreateLikeArticle::class,
     ],
     'DELETE' => [
-        '/articles/delete' => new DeleteArticle($articleRepository),
+        '/articles/delete' => DeleteArticle::class,
     ],
 ];
 
@@ -54,7 +50,8 @@ if (!array_key_exists($method, $routes) || !array_key_exists($path, $routes[$met
     return;
 }
 
-$action = $routes[$method][$path];
+$actionClassName = $routes[$method][$path];
+$action = $container->get($actionClassName);
 
 try {
     if (is_callable($action)) {
