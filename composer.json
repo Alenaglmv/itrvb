@@ -25,7 +25,8 @@
         "symfony/polyfill-uuid": "^1.28",
         "ext-pdo": "*",
         "symfony/http-foundation": "^7.0",
-        "monolog/monolog": "^3.5"
+        "monolog/monolog": "^3.5",
+        "symfony/console": "^7.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",

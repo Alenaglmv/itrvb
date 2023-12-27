@@ -25,4 +25,14 @@ class User {
     public function getName(): Name {
         return $this->name;
     }
+
+    public static function createFrom(string $username, Name $name): self
+    {
+        $uuid = UUID::random();
+        return new self(
+            $uuid,
+            $username,
+            $name
+        );
+    }
 }

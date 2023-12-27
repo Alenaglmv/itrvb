@@ -1,5 +1,6 @@
 <?php
 
+use Galim\Itrvb\Blog\Commands\FakeData\PopulateDB;
 use Galim\Itrvb\Blog\Container\DIContainer;
 use Galim\Itrvb\Blog\Repositories\ArticleRepository\ArticleRepositoryInterface;
 use Galim\Itrvb\Blog\Repositories\ArticleRepository\SqliteArticleRepository;
@@ -15,8 +16,17 @@ use Monolog\Level;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Faker\Generator;
+use Faker\Provider\ru_RU\Person;
+use Faker\Provider\ru_RU\Text;
+use Faker\Provider\ru_RU\Internet;
 
 require_once __DIR__ . '/vendor/autoload.php';
+
+$faker = new Generator();
+$faker->addProvider(new Person($faker));
+$faker->addProvider(new Text($faker));
+$faker->addProvider(new Internet($faker));
 
 $container = new DIContainer;
 
@@ -30,5 +40,6 @@ $container->bind(LoggerInterface::class, (new Logger('blog'))
     ->pushHandler(new FilterHandler(new StreamHandler(__DIR__ . '/logs/blog.error.log'), LogLevel::ERROR))
     ->pushHandler(new StreamHandler('php://stdout'))
 );
+$container->bind(Generator::class, $faker);
 
 return $container;
