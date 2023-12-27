@@ -14,16 +14,22 @@ use Galim\Itrvb\Blog\Repositories\ArticleRepository\ArticleRepositoryInterface;
 use Galim\Itrvb\Blog\Repositories\CommentRepository\CommentRepositoryInterface;
 use Galim\Itrvb\Blog\Repositories\UserRepository\UserRepositoryInterface;
 use Galim\Itrvb\Blog\UUID;
+use Psr\Log\LoggerInterface;
 
 class CreateComment implements ActionInterface
 {
     public function __construct(
-        private CommentRepositoryInterface $commentRepository, private UserRepositoryInterface $userRepository, private ArticleRepositoryInterface $articleRepository) {
+        private CommentRepositoryInterface $commentRepository,
+        private UserRepositoryInterface $userRepository,
+        private ArticleRepositoryInterface $articleRepository,
+        private LoggerInterface $logger) {
 
     }
 
     public function handle(Request $request): Response
     {
+        $this->logger->info("Create comment started");
+
         $userUuid = new UUID($request->jsonBodyField('author_uuid'));
         $user = $this->userRepository->get($userUuid);
 
@@ -40,10 +46,13 @@ class CreateComment implements ActionInterface
                 $request->jsonBodyField('texts')
             );
         } catch (HttpException $exception) {
+            $this->logger->error($exception->getMessage());
             return new ErrorResponse($exception->getMessage());
         }
 
         $this->commentRepository->save($comment);
+
+        $this->logger->info("Comment created: $newCommentUuid");
 
         return new SuccessfulResponse([
             'uuid' => (string)$newCommentUuid,

@@ -3,6 +3,7 @@
 namespace Galim\Itrvb\Blog\Repositories\ArticleRepository;
 
 use Galim\Itrvb\Blog\Article;
+use Galim\Itrvb\Blog\Exceptions\ArticleNotFoundException;
 use Galim\Itrvb\Blog\Exceptions\UserNotFoundException;
 use Galim\Itrvb\Blog\UUID;
 use PDO;
@@ -35,7 +36,7 @@ class SqliteArticleRepository implements ArticleRepositoryInterface {
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
         if($result === false) {
-            throw new UserNotFoundException(
+            throw new ArticleNotFoundException(
                 "Cannot get article: $uuid"
             );
         }

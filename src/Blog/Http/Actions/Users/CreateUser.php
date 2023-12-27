@@ -16,12 +16,14 @@ use Galim\Itrvb\Blog\UUID;
 
 class CreateUser implements ActionInterface
 {
-    public function __construct(private UserRepositoryInterface $usersRepository) {
+    public function __construct(private UserRepositoryInterface $usersRepository, private LoggerInterface $logger) {
 
     }
 
     public function handle(Request $request): Response
     {
+        $this->logger->info("Create user started");
+
         try {
             $uuid = UUID::random();
 
@@ -33,11 +35,14 @@ class CreateUser implements ActionInterface
                     $request->jsonBodyField('last_name')
                 )
             );
-        } catch (HttpException $exception)
-        {
+        } catch (HttpException $exception) {
+            $this->logger->error($exception->getMessage());
             return new ErrorResponse($exception->getMessage());
         }
         $this->usersRepository->save($user);
+
+        $this->logger->info("User created: $uuid");
+
         return new SuccessfulResponse([
             'uuid'=> (string)$uuid
         ]);
